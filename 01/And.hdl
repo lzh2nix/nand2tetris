@@ -14,5 +14,5 @@ CHIP And {
     OUT out;
 
     PARTS:
-    // Put your code here: tset github commit
+    // Put your code here:
 }
