@@ -13,6 +13,10 @@ CHIP And {
     IN a, b;
     OUT out;
 
+/**
+ * a AND b = Not(Not(A and b))
+ **/
     PARTS:
-    // Put your code here:
+    Nand(a=a, b=b, out=nandout);
+    Nand(a=nandout, b=nandout, out=out);
 }
