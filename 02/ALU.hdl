@@ -43,4 +43,36 @@ CHIP ALU {
 
     PARTS:
    // Put you code here:
+
+   // if (zx == 1) set x = 0 
+   Xor16(a = x, b = x, out = zx16);
+   Mux16(a =x , b = zx16, sel = zx, out = zxout);
+
+   // if (nx == 1) set x = !x
+   Not16(in = zxout, out = nzxout);
+   Mux16(a = zxout, b = nzxout, sel = nx, out = nxout);  
+
+    // if (zy == 1) set y = 0 
+   Xor16(a = y, b = y, out = zy16);
+   Mux16(a = y, b = zy16, sel = zy, out = zyout);
+
+   // if (ny == 1) set y = !y
+   Not16(in = zyout, out = nzyout);
+   Mux16(a = zyout, b = nzyout, sel = ny, out = nyout);
+
+   // if (f == 1)  set out = x + y  // integer 2's complement addition
+   // if (f == 0)  set out = x & y  // bitwise and   
+   Add16(a = nxout, b = nyout, out = sumnxoutnyout);
+   And16(a = nxout, b = nyout, out = andnxoutnyout);
+   Mux16(a = andnxoutnyout, b = sumnxoutnyout, sel = f, out = fout);
+
+   // if (no == 1) set out = !out   // bitwise not
+   Not16(in = fout, out = nfout);
+   Mux16(a = fout, b = nfout, sel = no, out[0..7]=low8, out[8..15]=high8, out[15] = ng, out = out); 
+
+   //zr = out[0] Or out[1] Or out[2] Or out[3] Or ........ Or out[16] = Or8way(low8) Or Or8way(high8)
+   Or8Way(in = low8, out = out1);
+   Or8Way(in = high8, out = out2);
+   Or(a = out1, b = out2, out = out3);
+   Not(in = out3, out = zr);
 }
