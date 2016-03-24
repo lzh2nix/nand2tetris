@@ -1,0 +1,20 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/03/a/Bit.hdl
+
+CHIP BitSet {
+    IN in;
+    OUT out[8];
+
+    PARTS:
+    // Put your code here:
+    And(a = in, b = in, out = out[0]);
+    And(a = in, b = in, out = out[1]);
+    And(a = in, b = in, out = out[2]);
+    And(a = in, b = in, out = out[3]);
+    And(a = in, b = in, out = out[4]);
+    And(a = in, b = in, out = out[5]);
+    And(a = in, b = in, out = out[6]);
+    And(a = in, b = in, out = out[7]);
+}
