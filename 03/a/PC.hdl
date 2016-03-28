@@ -17,4 +17,14 @@ CHIP PC {
 
     PARTS:
     // Put your code here:
+    Inc16(in = out1, out = outb);
+    Mux16(a = out1, b = outb, sel = inc, out = incout);
+
+    Mux16(a = incout, b = in, sel = load, out = loadout);
+
+    Xor16(a = out1, b = out1, out = ze);
+    Mux16(a = loadout, b = ze, sel = reset, out = resetout);
+
+
+    DFF16(in = resetout, out = out, out = out1);
 }
