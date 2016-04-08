@@ -40,4 +40,39 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    Not(in = instruction[15], out = ai); // A instruction 
+    Not(in = ai, out = ci); // C instruction
+   
+
+    And(a = ci, b = instruction[5], out = ca); // load output to A register
+    Mux16(a = instruction, b = Aluout, sel = ca, out = intoa);
+
+    Or(a = ai, b = ca,  out = loada);
+    ARegister(in = intoa, load = loada, out = regA, out[0..14] = addressM);
+    
+    Mux16(a = regA, b = inM, sel = instruction[12], out = outb); // input from regM or inM
+    
+
+    And(a = ci, b = instruction[4], out = loadd); // load to D register
+    DRegister(in = Aluout, load = loadd, out = regD);
+
+    ALU(x= regD,y= outb,zx= instruction[11],nx= instruction[10],zy= instruction[9],ny= instruction[8],f= instruction[7],no= instruction[6],out= Aluout, out = outM, zr= zr,ng= ng);
+
+    And(a = ci, b = instruction[3], out = writeM); // write to Memory
+
+    // jump
+    And(a = instruction[1], b = zr, out = equalZ); // equal 0
+    And(a = instruction[2], b= ng, out = littleZ); // little than 0
+    
+    // greate than 0
+    Or(a = zr, b = ng, out = zrOng);
+    Not(in = zrOng, out = greate);
+    And(a = greate, b = instruction[0], out = greateZ);
+    
+    Or(a = equalZ, b = littleZ, out = equalOlittleZ);
+    Or(a = equalOlittleZ, b = greateZ, out = jump1);
+    And(a = ci, b = jump1, out = jump);
+    // no jump
+    Not(in = jump, out = nojump);
+    PC(in = regA, reset = reset, load = jump, inc = nojump, out[0..14] = pc);
 }
